@@ -1,13 +1,14 @@
 <template>
   <main>
-    <ul>
+    <List>
       <ListItem v-for="(item, index) in categories"
                 :key="item"
                 :removeable="index > 3"
-                @remove="handleRemove(item)">
+                @remove="handleRemove(item)"
+      >
         {{ item }}
       </ListItem>
-    </ul>
+    </List>
     <StyledCategoriesFooter>
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item>
@@ -24,6 +25,22 @@
         </a-row>
       </a-form>
     </StyledCategoriesFooter>
+    <a-modal v-model="displayConfirmRemove"
+             okText="Confirm"
+             :closable="false"
+             @ok="handleRemoveConfirm"
+    >
+      <strong>
+        <List listStyle="disc">
+          <li>{{ selectedItem }} will be removed</li>
+          <li>All expense with this category will also be removed</li>
+        </List>
+        <br />
+        <p>
+            Do you really want to remove?
+        </p>
+      </strong>
+    </a-modal>
   </main>
 </template>
 
@@ -50,8 +67,10 @@ export default class CategoriesPage extends Vue {
 
   data() {
     return {
+      displayConfirmRemove: false,
       formLayout: 'horizontal',
-      form: this.$form.createForm(this, { name: 'coordinated' })
+      form: this.$form.createForm(this, { name: 'coordinated' }),
+      selectedItem: null,
     }
   }
 
@@ -78,7 +97,13 @@ export default class CategoriesPage extends Vue {
   }
 
   handleRemove(name: string) {
-    this.$accessor.categories.removeCategory(name)
+    this.$data.selectedItem = name
+    this.$data.displayConfirmRemove = true
+  }
+
+  handleRemoveConfirm() {
+    this.$accessor.categories.removeCategory(this.$data.selectedItem)
+    this.$data.displayConfirmRemove = false
   }
 }
 </script>

@@ -4,5 +4,5 @@ export const StyledIcon = styled.i`
   display: inline-flex;
   align-items: center;
   line-height: 0;
-  cursor: 'pointer';
+  cursor: pointer;
 `

@@ -11,3 +11,9 @@ declare module '@nuxt/types' {
     $accessor: typeof accessorType
   }
 }
+
+interface Category {
+  name: string
+  isMain: boolean
+  order: number
+}

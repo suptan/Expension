@@ -1,10 +1,5 @@
 import { mutationTree, actionTree } from 'typed-vuex'
-
-interface Category {
-  name: string
-  isMain: boolean
-  order: number
-}
+import { Category } from '~/types'
 
 export const state = () => ({
   list: [] as Category[],
@@ -17,7 +12,7 @@ export const getters = {
 }
 
 export const mutations = mutationTree(state, {
-  addCategory(state, newValue: string) {
+  add(state, newValue: string) {
     const unique = new Set(state.list.map(s => s.name))
 
     if (unique.has(newValue)) {
@@ -28,12 +23,12 @@ export const mutations = mutationTree(state, {
 
     // Tricky part when dealing with Array or object in vuex state
     const newList = [...state.list]
-    newList.push({ isMain: false, order: state.list.length, name: newValue })
+    newList.push({ isMain: false, order: state.list.length + 1, name: newValue })
     state.list = newList
 
-      localStorage.setItem('categories', JSON.stringify(newList))
+    localStorage.setItem('categories', JSON.stringify(newList))
   },
-  removeCategory(state, value: string) {
+  remove(state, value: string) {
     const list = state.list.filter(s => s.name !== value)
 
     if (list.length === state.list.length) {
@@ -44,6 +39,17 @@ export const mutations = mutationTree(state, {
     state.list = list
 
     localStorage.setItem('categories', JSON.stringify(list))
+  },
+  update(state, { oldValue, newValue }) {
+    state.list = state.list.map(item => {
+      if (item.name === oldValue) {
+        item.name = newValue
+      }
+
+      return item
+    })
+
+    localStorage.setItem('categories', JSON.stringify(state.list))
   },
   initialiseStore(state) {
     if (!localStorage.getItem('categories')) {

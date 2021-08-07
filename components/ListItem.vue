@@ -1,8 +1,5 @@
 <template>
-  <StyledListItem>
-      <slot />
-      <CrossOutlined v-if="removeable" @click="$emit('remove')" />
-  </StyledListItem>
+  <StyledListItem><slot /></StyledListItem>
 </template>
 
 <script lang="ts">

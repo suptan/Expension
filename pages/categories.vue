@@ -1,16 +1,14 @@
 <template>
   <main>
     <List>
-      <ListItem v-for="item in categories"
-                :key="item"
-                :removeable="!item.isMain"
-                @remove="handleRemove(item.name)"
-      >
-        {{ item.name }}
-      </ListItem>
+      <CategoryItem v-for="item in categories"
+                    :key="item.order"
+                    :item="item"
+                    @remove="handleRemove(item.name)"
+      />
     </List>
     <StyledCategoriesFooter>
-      <a-form :form="form" @submit="handleSubmit">
+      <a-form layout="horizontal" :form="form" @submit="handleSubmit">
         <a-form-item>
           <a-input
             v-decorator="['name', { rules: [{ required: true, message: 'Please input the name!' }] }]"
@@ -32,7 +30,7 @@
     >
       <strong>
         <List listStyle="disc">
-          <li>&#8220;{{ selectedItem.name }}&#8221; will be removed</li>
+          <li>&#8220;{{ selectedItem }}&#8221; will be removed</li>
           <li>All expense with this category will also be removed</li>
         </List>
         <br />
@@ -68,7 +66,6 @@ export default class CategoriesPage extends Vue {
   data() {
     return {
       displayConfirmRemove: false,
-      formLayout: 'horizontal',
       form: this.$form.createForm(this, { name: 'coordinated' }),
       selectedItem: null,
     }
@@ -91,7 +88,7 @@ export default class CategoriesPage extends Vue {
       }
       const { name } = values
 
-      this.$accessor.categories.addCategory(name)
+      this.$accessor.categories.add(name)
       this.$data.form.resetFields(['name'])
     });
   }
@@ -102,7 +99,7 @@ export default class CategoriesPage extends Vue {
   }
 
   handleRemoveConfirm() {
-    this.$accessor.categories.removeCategory(this.$data.selectedItem)
+    this.$accessor.categories.remove(this.$data.selectedItem)
     this.$data.displayConfirmRemove = false
   }
 }

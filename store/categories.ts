@@ -16,7 +16,7 @@ export const mutations = mutationTree(state, {
     localStorage.setItem('categories', `${localStorage.getItem('categories')},${newValue}`)
   },
   removeCategory(state, newValue: string) {
-    state.list.delete(item)
+    state.list.delete(newValue)
     localStorage.setItem('categories', [...state.list].join(','))
   },
   initialiseStore(state) {

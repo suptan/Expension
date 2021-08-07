@@ -13,14 +13,21 @@ export const getters = {
 export const mutations = mutationTree(state, {
   addCategory(state, newValue: string) {
     state.list.add(newValue)
+    // Tricky part when dealing with Array or object in vuex state
+    const newSet = new Set(state.list)
+    state.list = newSet
+
     localStorage.setItem('categories', `${localStorage.getItem('categories')},${newValue}`)
   },
-  removeCategory(state, newValue: string) {
-    state.list.delete(newValue)
+  removeCategory(state, value: string) {
+    state.list.delete(value)
+    // Tricky part when dealing with Array or object in vuex state
+    const newSet = new Set(state.list)
+    state.list = newSet
+
     localStorage.setItem('categories', [...state.list].join(','))
   },
   initialiseStore(state) {
-    console.log('initialised')
     if (!localStorage.getItem('categories')) {
       localStorage.setItem('categories', 'Food,Transportation,Entertainment,Work')
     }

@@ -1,12 +1,12 @@
 <template>
   <main>
     <List>
-      <ListItem v-for="(item, index) in categories"
+      <ListItem v-for="item in categories"
                 :key="item"
-                :removeable="index > 3"
-                @remove="handleRemove(item)"
+                :removeable="!item.isMain"
+                @remove="handleRemove(item.name)"
       >
-        {{ item }}
+        {{ item.name }}
       </ListItem>
     </List>
     <StyledCategoriesFooter>
@@ -32,7 +32,7 @@
     >
       <strong>
         <List listStyle="disc">
-          <li>{{ selectedItem }} will be removed</li>
+          <li>&#8220;{{ selectedItem.name }}&#8221; will be removed</li>
           <li>All expense with this category will also be removed</li>
         </List>
         <br />

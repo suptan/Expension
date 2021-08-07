@@ -1,7 +1,13 @@
 import { mutationTree, actionTree } from 'typed-vuex'
 
+interface Category {
+  name: string
+  isMain: boolean
+  order: number
+}
+
 export const state = () => ({
-  list: new Set<string>(),
+  list: [] as Category[],
 })
 
 type RootState = ReturnType<typeof state>
@@ -12,27 +18,45 @@ export const getters = {
 
 export const mutations = mutationTree(state, {
   addCategory(state, newValue: string) {
-    state.list.add(newValue)
-    // Tricky part when dealing with Array or object in vuex state
-    const newSet = new Set(state.list)
-    state.list = newSet
+    const unique = new Set(state.list.map(s => s.name))
 
-    localStorage.setItem('categories', `${localStorage.getItem('categories')},${newValue}`)
+    if (unique.has(newValue)) {
+      // TODO: feedback duplication error
+      console.debug('Add duplicate category')
+      return
+    }
+
+    // Tricky part when dealing with Array or object in vuex state
+    const newList = [...state.list]
+    newList.push({ isMain: false, order: state.list.length, name: newValue })
+    state.list = newList
+
+      localStorage.setItem('categories', JSON.stringify(newList))
   },
   removeCategory(state, value: string) {
-    state.list.delete(value)
-    // Tricky part when dealing with Array or object in vuex state
-    const newSet = new Set(state.list)
-    state.list = newSet
+    const list = state.list.filter(s => s.name !== value)
 
-    localStorage.setItem('categories', [...state.list].join(','))
+    if (list.length === state.list.length) {
+      console.debug('Item not found')
+      return
+    }
+
+    state.list = list
+
+    localStorage.setItem('categories', JSON.stringify(list))
   },
   initialiseStore(state) {
     if (!localStorage.getItem('categories')) {
-      localStorage.setItem('categories', 'Food,Transportation,Entertainment,Work')
+      const categories: Category[] = [
+        { isMain: true, order: 1, name: 'Food' },
+        { isMain: true, order: 2, name: 'Transportation' },
+        { isMain: true, order: 3, name: 'Entertainment' },
+        { isMain: true, order: 4, name: 'Work' },
+      ]
+      localStorage.setItem('categories', JSON.stringify(categories))
     }
 
-    state.list = new Set(localStorage.getItem('categories')?.split(','))
+    state.list = JSON.parse(localStorage.getItem('categories') || '{}')
   },
 })
 

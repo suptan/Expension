@@ -1,6 +1,8 @@
 import styled from 'vue-styled-components';
 
-export const StyledIcon = styled.span`
-  display: inline-block;
-  text-align: center;
+export const StyledIcon = styled.i`
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  cursor: 'pointer';
 `

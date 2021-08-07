@@ -7,6 +7,8 @@
                 @remove="handleRemove(item)">
         {{ item }}
       </ListItem>
+    </ul>
+    <StyledCategoriesFooter>
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item>
           <a-input
@@ -21,12 +23,13 @@
           </a-col>
         </a-row>
       </a-form>
-    </ul>
+    </StyledCategoriesFooter>
   </main>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
+import { StyledCategoriesFooter } from "../styled-components/CategoriesFooter"
 
 type FormState = {
   name: string
@@ -38,13 +41,17 @@ type FormStateError = {
   }
 }
 
-@Component
+@Component({
+  components: {
+    StyledCategoriesFooter,
+  },
+})
 export default class CategoriesPage extends Vue {
 
   data() {
     return {
-    formLayout: 'horizontal',
-    form: this.$form.createForm(this, { name: 'coordinated' })
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this, { name: 'coordinated' })
     }
   }
 

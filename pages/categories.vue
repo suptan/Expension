@@ -1,7 +1,12 @@
 <template>
   <main>
     <ul>
-      <ListItem v-for="item in categories" :key="item">{{ item }}</ListItem>
+      <ListItem v-for="(item, index) in categories"
+                :key="item"
+                :removeable="index > 3"
+                @remove="handleRemove(item)">
+        {{ item }}
+      </ListItem>
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item>
           <a-input
@@ -35,15 +40,16 @@ type FormStateError = {
 
 @Component
 export default class CategoriesPage extends Vue {
-  get categories() {
-    return this.$accessor.categories.list
-  }
 
   data() {
     return {
-      formLayout: 'horizontal',
-      form: this.$form.createForm(this, { name: 'coordinated' }),
-    };
+    formLayout: 'horizontal',
+    form: this.$form.createForm(this, { name: 'coordinated' })
+    }
+  }
+
+  get categories() {
+    return this.$accessor.categories.list
   }
 
   created() {
@@ -62,6 +68,10 @@ export default class CategoriesPage extends Vue {
       this.$accessor.categories.addCategory(name)
       this.$data.form.resetFields(['name'])
     });
+  }
+
+  handleRemove(name: string) {
+    this.$accessor.categories.removeCategory(name)
   }
 }
 </script>

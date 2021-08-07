@@ -18,9 +18,12 @@
     "*.{css,vue}": "stylelint"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.5",
     "ant-design-vue": "1.7.6",
     "core-js": "3.15.1",
-    "nuxt": "2.15.7"
+    "csstype": "^3.0.8",
+    "nuxt": "2.15.7",
+    "vue-styled-components": "^1.6.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.14.7",

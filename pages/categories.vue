@@ -1,9 +1,11 @@
 <template>
   <main>
-    <List>
+    <List @drop="handleDrop($event)">
       <CategoryItem v-for="item in categories"
                     :key="item.order"
                     :item="item"
+                    @dragstart="startDrag($event, item)"
+                    @dragenter="handleDragEnter($event, item)"
                     @remove="handleRemove(item.name)"
       />
     </List>
@@ -44,6 +46,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
+import { Category } from '~/types'
 import { StyledCategoriesFooter } from "../styled-components/CategoriesFooter"
 
 type FormState = {
@@ -66,6 +69,8 @@ export default class CategoriesPage extends Vue {
   data() {
     return {
       displayConfirmRemove: false,
+      dragItem: null,
+      dropItem: null,
       form: this.$form.createForm(this, { name: 'coordinated' }),
       selectedItem: null,
     }
@@ -101,6 +106,31 @@ export default class CategoriesPage extends Vue {
   handleRemoveConfirm() {
     this.$accessor.categories.remove(this.$data.selectedItem)
     this.$data.displayConfirmRemove = false
+  }
+
+  startDrag(evt: DragEvent, item: Category) {
+    if (!evt.dataTransfer) {
+      return
+    }
+
+    evt.dataTransfer.dropEffect = 'move'
+    evt.dataTransfer.effectAllowed = 'move'
+
+    this.$data.dragItem = item;
+  }
+
+  handleDragEnter(evt: DragEvent, item: Category) {
+    evt.preventDefault()
+    this.$data.dropItem = item
+  }
+
+  handleDrop(evt: DragEvent) {
+    evt.preventDefault()
+    if (!evt.dataTransfer) {
+      return
+    }
+
+    this.$accessor.categories.sort({ firstItem: this.$data.dragItem, secondItem: this.$data.dropItem })
   }
 }
 </script>

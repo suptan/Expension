@@ -1,5 +1,5 @@
 <template v-else>
-  <ListItem v-if="isEdit" @click="clickable ? $emit('click') : null">
+  <ListItem v-if="isEdit">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item>
           <a-input
@@ -18,7 +18,7 @@
         </a-form-item>
       </a-form>
   </ListItem>
-  <ListItem v-else>
+  <ListItem v-else @dragstart="$emit('dragstart', $event)" @dragenter="$emit('dragenter', $event)">
     <span @click="handleEdit">{{ item.name }}</span>
     <CrossOutlined v-if="clickable" @click="$emit('remove', item)" />
 </ListItem>

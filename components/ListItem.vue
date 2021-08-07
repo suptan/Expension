@@ -1,18 +1,17 @@
 <template>
-  <StyledListItem><slot /></StyledListItem>
+  <StyledListItem draggable
+                  @dragstart="$emit('dragstart', $event)"
+                  @dragenter="$emit('dragenter', $event)"
+                  @click="$emit('click')"
+  >
+    <slot />
+  </StyledListItem>
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue'
 import { StyledListItem } from "../styled-components/ListItem"
 
 export default {
-  props: {
-    close: {
-      type: Function as PropType<() => void>,
-    },
-    removeable: Boolean,
-  },
   components: {
     StyledListItem,
   },

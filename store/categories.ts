@@ -51,6 +51,23 @@ export const mutations = mutationTree(state, {
 
     localStorage.setItem('categories', JSON.stringify(state.list))
   },
+  sort(state, { firstItem, secondItem }) {
+    console.log(firstItem, secondItem);
+    const list = [...state.list]
+    let start = Math.min(firstItem.order, secondItem.order)
+    let end  = Math.max(firstItem.order, secondItem.order)
+
+    ;[list[firstItem.order - 1], list[secondItem.order - 1]] = [list[secondItem.order - 1], list[firstItem.order - 1]]
+
+    while (start <= end) {
+      list[start - 1].order = start
+      start += 1
+    }
+
+    state.list = list
+    
+    localStorage.setItem('categories', JSON.stringify(state.list))
+  },
   initialiseStore(state) {
     if (!localStorage.getItem('categories')) {
       const categories: Category[] = [

@@ -1,5 +1,9 @@
 <template>
-  <StyledList :listStyle="listStyle">
+  <StyledList :listStyle="listStyle"
+              @drop="$emit('drop', $event)"
+              @dragover.prevent
+              @dragenter.prevent
+  >
     <slot />
   </StyledList>
 </template>

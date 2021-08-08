@@ -1,30 +1,35 @@
 <template>
   <section>
-    <List @drop="handleDrop($event)">
-      <CategoryItem v-for="item in categories"
-                    :key="item.order"
-                    :item="item"
-                    @dragstart="startDrag($event, item)"
-                    @dragenter.prevent="handleDragEnter(item)"
-                    @remove="handleRemove(item.name)"
-      />
-    </List>
-    <StyledCategoriesFooter>
-      <a-form layout="horizontal" :form="form" @submit="handleSubmit">
-        <a-form-item>
-          <a-input
-            v-decorator="['name', { rules: [{ required: true, message: 'Please input the name!' }] }]"
-          />
-        </a-form-item>
-        <a-row>
-          <a-col :span="24" :style="{ textAlign: 'right' }">
-            <a-button type="primary" html-type="submit">
-              Add
-            </a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </StyledCategoriesFooter>
+    <Header>
+      <PageTitle>Category List</PageTitle>
+    </Header>
+    <StyledContainer>
+      <List @drop="handleDrop($event)">
+        <CategoryItem v-for="item in categories"
+                      :key="item.order"
+                      :item="item"
+                      @dragstart="startDrag($event, item)"
+                      @dragenter.prevent="handleDragEnter(item)"
+                      @remove="handleRemove(item.name)"
+        />
+      </List>
+      <StyledCategoriesFooter>
+        <a-form layout="horizontal" :form="form" @submit="handleSubmit">
+          <a-form-item>
+            <a-input
+              v-decorator="['name', { rules: [{ required: true, message: 'Please input the name!' }] }]"
+            />
+          </a-form-item>
+          <a-row>
+            <a-col :span="24" :style="{ textAlign: 'right' }">
+              <a-button type="primary" html-type="submit">
+                Add
+              </a-button>
+            </a-col>
+          </a-row>
+        </a-form>
+      </StyledCategoriesFooter>
+    </StyledContainer>
     <a-modal v-model="displayConfirmRemove"
              ok-text="Confirm"
              :closable="false"
@@ -48,6 +53,7 @@
 import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
 import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
+import { StyledContainer } from '../styled-components/Container'
 import { CategoriesActionTypes } from '~/store/modules/categories/action-types'
 import { CategoriesSortPayload, Category, Store } from '~/types'
 
@@ -64,7 +70,7 @@ type FormState = {
 }
 
 export default defineComponent({
-  components: { StyledCategoriesFooter },
+  components: { StyledCategoriesFooter, StyledContainer },
   setup() {
     const store = useStore<Store>()
     const categories = computed(() => (store.state.categories.list))

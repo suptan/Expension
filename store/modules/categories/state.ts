@@ -1,4 +1,4 @@
-import { Category, CategoryState } from "~/types"
+import { Category, CategoryState } from '~/types'
 
 export const state: CategoryState = initialiseStore()
 

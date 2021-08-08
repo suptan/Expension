@@ -18,7 +18,11 @@
         </a-form-item>
       </a-form>
   </ListItem>
-  <ListItem v-else @dragstart="$emit('dragstart', $event)" @dragenter="$emit('dragenter', $event)">
+  <ListItem v-else
+            :draggable="true"
+            @dragstart="$emit('dragstart', $event)"
+            @dragenter="$emit('dragenter', $event)"
+  >
     <span @click="handleEdit">{{ item.name }}</span>
     <CrossOutlined v-if="!item.isMain" @click="$emit('remove', item)" />
   </ListItem>

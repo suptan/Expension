@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { StyledIcon } from "../styled-components/Icon"
+import { StyledIcon } from '../styled-components/Icon'
 
 export default {
   components: {

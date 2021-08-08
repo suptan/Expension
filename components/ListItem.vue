@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { StyledListItem } from "../styled-components/ListItem"
+import { StyledListItem } from '../styled-components/ListItem'
 
 export default {
   components: {

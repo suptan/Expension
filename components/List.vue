@@ -1,5 +1,5 @@
 <template>
-  <StyledList :listStyle="listStyle"
+  <StyledList :list-style="listStyle"
               @drop="$emit('drop', $event)"
               @dragover.prevent
               @dragenter.prevent
@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts">
-import { StyledList } from "../styled-components/List"
+import { StyledList } from '../styled-components/List'
 
 export default {
+  components: {
+    StyledList,
+  },
   props: {
     listStyle: {
       type: String,
       default: 'none',
     },
-  },
-  components: {
-    StyledList,
   },
 }
 </script>

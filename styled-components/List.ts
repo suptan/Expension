@@ -1,4 +1,4 @@
-import styled from 'vue-styled-components';
+import styled from 'vue-styled-components'
 
 type ListProps = {
   listStyle?: string

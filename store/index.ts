@@ -1,18 +1,12 @@
-import { getAccessorType, mutationTree } from 'typed-vuex'
-import * as categories from './categories'
+import Vuex from 'vuex'
+import categories from './modules/categories'
 
-export const state = () => ({})
+const createStore = () => {
+  return new Vuex.Store({
+    modules: {
+      categories,
+    }
+  });
+};
 
-export const mutations = mutationTree(state, {
-  initialiseStore() {
-    console.log('initialized')
-  },
-})
-
-export const accessorType = getAccessorType({
-  mutations,
-  state,
-  modules: {
-    categories,
-  },
-})
+export default createStore

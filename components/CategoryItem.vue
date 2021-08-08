@@ -1,4 +1,4 @@
-<template v-else>
+<template>
   <ListItem v-if="isEdit">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item>
@@ -20,68 +20,77 @@
   </ListItem>
   <ListItem v-else @dragstart="$emit('dragstart', $event)" @dragenter="$emit('dragenter', $event)">
     <span @click="handleEdit">{{ item.name }}</span>
-    <CrossOutlined v-if="clickable" @click="$emit('remove', item)" />
-</ListItem>
+    <CrossOutlined v-if="!item.isMain" @click="$emit('remove', item)" />
+  </ListItem>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'nuxt-property-decorator'
-import { Category } from '~/types'
+import {
+  defineComponent,
+  PropType,
+  useStore,
+} from '@nuxtjs/composition-api'
+import { CategoriesActionTypes } from '~/store/modules/categories/action-types'
+import { CategoriesUpdatePayload, Category, Store } from '~/types'
 
 type FormState = {
   name: string
 }
 
-type FormStateError = {
-  name: {
-    error: Error[]
-  }
-}
+export default defineComponent({
+  name: 'CategoryItem',
+  props: {
+    item: {
+      type: Object as PropType<Category>,
+      default: () => ({}),
+    }
+  },
+  setup() {
+    const store = useStore<Store>()
 
-@Component
-export default class CategoriesItem extends Vue {
-  @Prop({ default: {} })
-  item!: Category
+    const updateCategory = (payload: CategoriesUpdatePayload) => {
+      try {
+        store.dispatch(CategoriesActionTypes.UPDATE, payload)
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
+    return {
+      updateCategory,
+    }
+  },
   data() {
     return {
-      clickable: !this.item.isMain,
       form: this.$form.createForm(this, {
         name: 'editCategory',
       }),
       isEdit: false,
     }
-  }
-
-  handleEdit() {
-    this.$data.isEdit = true
-  }
-
-  handleSubmit(e: Event) {
-    e.preventDefault()
-    this.$data.form.validateFields((error: FormStateError, values: FormState) => {
-      if (error) {
+  },
+  methods: {
+    handleEdit() {
+      if (this.item.isMain) {
         return
       }
-      const { name } = values
 
-      this.$accessor.categories.update({ oldValue: this.$props.item.name, newValue: name })
-      this.$data.isEdit = false
-    });
-  }
+      this.isEdit = true
+    },
+    handleDiscard() {
+      this.isEdit = false
+    },
+    handleSubmit(e: Event) {
+      e.preventDefault()
+      this.form.validateFields((error: Error[], values: FormState) => {
+        if (error) {
+          return
+        }
+        const { name } = values
 
-  handleRemove(name: string) {
-    this.$data.selectedItem = name
-    this.$data.displayConfirmRemove = true
+        this.updateCategory({ oldValue: this.$props.item.name, newValue: name })
+        this.isEdit = false
+      })
+    },
   }
-
-  handleRemoveConfirm() {
-    this.$accessor.categories.remove(this.$data.selectedItem)
-    this.$data.displayConfirmRemove = false
-  }
-
-  handleDiscard() {
-    this.$data.isEdit = false
-  }
-}
+})
 </script>

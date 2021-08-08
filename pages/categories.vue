@@ -1,11 +1,11 @@
 <template>
-  <main>
+  <section>
     <List @drop="handleDrop($event)">
       <CategoryItem v-for="item in categories"
                     :key="item.order"
                     :item="item"
                     @dragstart="startDrag($event, item)"
-                    @dragenter="handleDragEnter($event, item)"
+                    @dragenter.prevent="handleDragEnter(item)"
                     @remove="handleRemove(item.name)"
       />
     </List>
@@ -26,12 +26,12 @@
       </a-form>
     </StyledCategoriesFooter>
     <a-modal v-model="displayConfirmRemove"
-             okText="Confirm"
+             ok-text="Confirm"
              :closable="false"
              @ok="handleRemoveConfirm"
     >
       <strong>
-        <List listStyle="disc">
+        <List list-style="disc">
           <li>&#8220;{{ selectedItem }}&#8221; will be removed</li>
           <li>All expense with this category will also be removed</li>
         </List>
@@ -41,96 +41,113 @@
         </p>
       </strong>
     </a-modal>
-  </main>
+  </section>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'nuxt-property-decorator'
-import { Category } from '~/types'
-import { StyledCategoriesFooter } from "../styled-components/CategoriesFooter"
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
+import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
+import { CategoriesActionTypes } from '~/store/modules/categories/action-types'
+import { CategoriesSortPayload, Category, Store } from '~/types'
+
+type CategoriesPageData = {
+  displayConfirmRemove?: boolean,
+  dragItem?: Category,
+  dropItem?: Category,
+  form: WrappedFormUtils,
+  selectedItem: string,
+}
 
 type FormState = {
   name: string
 }
 
-type FormStateError = {
-  name: {
-    error: Error[]
-  }
-}
+export default defineComponent({
+  components: { StyledCategoriesFooter },
+  setup() {
+    const store = useStore<Store>()
+    const categories = computed(() => (store.state.categories.list))
+    const addCategory = (payload: string) => {
+      try {
+        store.dispatch(CategoriesActionTypes.ADD, payload)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    const removeCategory = (payload: string) => {
+      try {
+        store.dispatch(CategoriesActionTypes.REMOVE, payload)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    const sortCategory = (payload: CategoriesSortPayload) => {
+      try {
+        store.dispatch(CategoriesActionTypes.SORT, payload)
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
-@Component({
-  components: {
-    StyledCategoriesFooter,
+    return {
+      addCategory,
+      categories,
+      removeCategory,
+      sortCategory,
+    }
   },
-})
-export default class CategoriesPage extends Vue {
-
-  data() {
+  data(): CategoriesPageData {
     return {
       displayConfirmRemove: false,
-      dragItem: null,
-      dropItem: null,
+      dragItem: undefined,
+      dropItem: undefined,
       form: this.$form.createForm(this, { name: 'coordinated' }),
-      selectedItem: null,
+      selectedItem: '',
     }
-  }
+  },
+  methods: {
+    handleSubmit(evt: Event) {
+      evt.preventDefault()
+      this.form.validateFields((error: Error[], values: FormState) => {
+        if (error) {
+          return
+        }
+        const { name } = values
 
-  get categories() {
-    return this.$accessor.categories.list
-  }
-
-  created() {
-    // TODO: should init on app initial not page
-    this.$accessor.categories.initialiseStore()
-  }
-
-  handleSubmit(e: Event) {
-    e.preventDefault()
-    this.$data.form.validateFields((error: FormStateError, values: FormState) => {
-      if (error) {
+        this.addCategory(name)
+        this.form.resetFields(['name'])
+      })
+    },
+    handleRemove(name: string) {
+      this.selectedItem = name
+      this.displayConfirmRemove = true
+    },
+    handleRemoveConfirm() {
+      this.removeCategory(this.selectedItem)
+      this.displayConfirmRemove = false
+    },
+    startDrag(evt: DragEvent, item: Category) {
+      if (!evt.dataTransfer) {
         return
       }
-      const { name } = values
 
-      this.$accessor.categories.add(name)
-      this.$data.form.resetFields(['name'])
-    });
+      evt.dataTransfer.dropEffect = 'move'
+      evt.dataTransfer.effectAllowed = 'move'
+
+      this.dragItem = item
+    },
+    handleDragEnter(item: Category) {
+      this.dropItem = item
+    },
+    handleDrop(evt: DragEvent) {
+      evt.preventDefault()
+      if (!evt.dataTransfer || !this.dragItem || !this.dropItem) {
+        return
+      }
+
+      this.sortCategory({ firstItem: this.dragItem, secondItem: this.dropItem })
+    },
   }
-
-  handleRemove(name: string) {
-    this.$data.selectedItem = name
-    this.$data.displayConfirmRemove = true
-  }
-
-  handleRemoveConfirm() {
-    this.$accessor.categories.remove(this.$data.selectedItem)
-    this.$data.displayConfirmRemove = false
-  }
-
-  startDrag(evt: DragEvent, item: Category) {
-    if (!evt.dataTransfer) {
-      return
-    }
-
-    evt.dataTransfer.dropEffect = 'move'
-    evt.dataTransfer.effectAllowed = 'move'
-
-    this.$data.dragItem = item;
-  }
-
-  handleDragEnter(evt: DragEvent, item: Category) {
-    evt.preventDefault()
-    this.$data.dropItem = item
-  }
-
-  handleDrop(evt: DragEvent) {
-    evt.preventDefault()
-    if (!evt.dataTransfer) {
-      return
-    }
-
-    this.$accessor.categories.sort({ firstItem: this.$data.dragItem, secondItem: this.$data.dropItem })
-  }
-}
+})
 </script>

@@ -1,14 +1,14 @@
 import {
-	DispatchOptions,
-	CommitOptions,
-	Module,
+  DispatchOptions,
+  CommitOptions,
+  Module,
 } from 'vuex'
 import actions, { Actions } from './actions'
 import getters, { Getters } from './getter'
 import mutations, { Mutations } from './mutations'
 import { state } from './state'
 import {
-	CategoryState, RootState,
+  CategoryState, RootState,
 } from '~/types'
 
 export type CategoriesStore<S = CategoryState> = S & {
@@ -30,10 +30,10 @@ export type CategoriesStore<S = CategoryState> = S & {
 };
 
 const categories: Module<CategoryState, RootState> = {
-	state,
-	actions,
-	mutations,
-	getters,
+  state,
+  actions,
+  mutations,
+  getters,
 }
   
 export default categories

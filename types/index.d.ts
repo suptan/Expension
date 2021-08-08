@@ -1,6 +1,6 @@
 import { Form } from 'ant-design-vue'
 import { CategoriesStore } from '~/store/modules/categories'
-import { ExpenseTypeEnum } from '~/store/modules/expenses'
+import { ExpensesStore, ExpenseTypeEnum } from '~/store/modules/expenses'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -28,6 +28,15 @@ interface Expense {
   description: string
 }
 
+interface MonthlyExpense {
+  month: number
+  year: number
+  total: number
+  transactions: Expense[]
+  sign: string
+  color: string
+}
+
 type CategoriesUpdatePayload = {
   oldValue: string
   newValue: string 
@@ -48,8 +57,14 @@ interface CategoryState {
   list: Category[]
 }
 
-type RootState = {
-  categories: CategoryState
+interface ExpenseState {
+  data: Expense[]
 }
 
-type Store = CategoriesStore<Pick<RootState, 'categories'>>
+type RootState = {
+  categories: CategoryState
+  expenses: ExpenseState
+}
+
+type Store = CategoriesStore<Pick<RootState, 'categories'>> &
+  ExpensesStore<Pick<RootState, 'expenses'>>

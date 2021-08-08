@@ -1,5 +1,6 @@
 <template>
   <StyledList :list-style="listStyle"
+              :width="width"
               @drop="$emit('drop', $event)"
               @dragover.prevent
               @dragenter.prevent
@@ -19,6 +20,10 @@ export default {
     listStyle: {
       type: String,
       default: 'none',
+    },
+    width: {
+      type: String,
+      default: undefined,
     },
   },
 }

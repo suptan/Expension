@@ -20,7 +20,7 @@ export default defineComponent({
     const { path } = this.$router.currentRoute
     const menus = [{
       name: 'Expense',
-      path: '/expense',
+      path: '/',
     },{
       name: 'Category',
       path: '/categories',

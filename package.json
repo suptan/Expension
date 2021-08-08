@@ -26,7 +26,8 @@
     "nuxt": "2.15.2",
     "nuxt-property-decorator": "2.9.1",
     "nuxt-typed-vuex": "0.2.0",
-    "vue-styled-components": "1.6.0"
+    "vue-styled-components": "1.6.0",
+    "vue-uuid": "^2.0.2"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.14.7",

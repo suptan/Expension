@@ -12,6 +12,8 @@ import {
   ExpenseState, RootState,
 } from '~/types'
 
+export const storageKey = 'expense'
+
 export enum ExpenseTypeEnum {
   CashIn = 'Cash In',
   CashOut = 'Cash Out',
@@ -34,12 +36,13 @@ export type ExpensesStore<S = ExpenseState> = S & {
       [K in keyof Getters]: ReturnType<Getters[K]>
     };
   };
-  
+
 const categories: Module<ExpenseState, RootState> = {
   state,
   actions,
   mutations,
   getters,
+  namespaced: true,
 }
     
 export default categories

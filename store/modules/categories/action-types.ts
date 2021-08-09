@@ -4,3 +4,10 @@ export enum CategoriesActionTypes {
   UPDATE = 'UPDATE',
   SORT = 'SORT',
 }
+
+export enum CategoriesAction {
+  ADD = 'categories/ADD',
+  REMOVE = 'categories/REMOVE',
+  UPDATE = 'categories/UPDATE',
+  SORT = 'categories/SORT',
+}

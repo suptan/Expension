@@ -34,6 +34,7 @@ const categories: Module<CategoryState, RootState> = {
   actions,
   mutations,
   getters,
+  namespaced: true,
 }
   
 export default categories

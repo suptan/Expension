@@ -41,7 +41,7 @@
         </a-form-item>
         <a-form-item>
           <StyledExpandFooter>
-            <a-button>Cancel</a-button>
+            <a-button @click="handleCancel">Cancel</a-button>
             <a-button type="primary" html-type="submit">Add</a-button>
           </StyledExpandFooter>
         </a-form-item>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { useStore } from '@nuxtjs/composition-api'
+import { useRouter, useStore } from '@nuxtjs/composition-api'
 import { computed, defineComponent } from '@vue/composition-api'
 import moment from 'moment'
 import { DateFormat } from '~/helpers/data'
@@ -76,6 +76,7 @@ export default defineComponent({
   components: { StyledContainer, StyledRadioGroup, StyledInputNumber, StyledExpandFooter },
   layout: 'empty',
   setup() {
+    const router = useRouter()
     const store = useStore<Store>()
     const categories = computed(() => store.state.categories.list)
     const types = ExpenseTypeEnum
@@ -86,9 +87,6 @@ export default defineComponent({
         console.error(error)
       }
     }
-    
-    //   :formatter="value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-    //   :parser="value => value.replace(/\$\s?|(,*)/g, '')"
 
     return {
       addExpense,
@@ -133,18 +131,15 @@ export default defineComponent({
         ],
       },
       descriptionConfig: {},
+      handleCancel() {
+        router.push('/')
+      },
     }
   },
   data() {
     return {
       form: this.$form.createForm(this, {
         name: 'expense',
-        // onFieldsChange = (props, fields: FormState) => {
-        //   console.log(props, fields)
-        //   if (fields.amount != null) {
-        //     this.$form.
-        //   }
-        // },
       }),
     }
   },
@@ -163,16 +158,10 @@ export default defineComponent({
         }
 
         this.addExpense(payload)
+
+        this.$router.push('/')
       })
     },
-    // handleAmountChange(evt: InputEvent) {
-    //   console.log('change', evt)
-    //   //   this.form.setFieldsValue({ description: 'dsgj' })
-    //   this.form.setFieldsValue({ amount: 'dsgj' })
-    //   console.log(this.form.getFieldsValue())
-    // //   this.form.setFields({ amount: { value: 'cdh'}})
-    // //   setFieldsValue({ amount: 'agd' })
-    // },
   }
 })
 </script>

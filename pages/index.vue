@@ -2,6 +2,11 @@
   <section>
     <Header>
       <PageTitle>Expense Tracking</PageTitle>
+      <StyledExpenseActionFloat>
+        <a-button type="primary" @click="handleAddExpenseClick">
+          Add
+        </a-button>
+      </StyledExpenseActionFloat>
     </Header>
     <StyledContainer>
       <ul>
@@ -33,6 +38,7 @@
 import {
   computed,
   defineComponent,
+  useRouter,
   useStore,
 } from '@nuxtjs/composition-api'
 import { uuid } from 'vue-uuid'
@@ -42,11 +48,13 @@ import { StyledContainer } from '~/styled-components/Container'
 import { StyledReportCard } from '~/styled-components/ReportCard'
 import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
 import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
+import { StyledExpenseActionFloat } from '~/styled-components/ExpenseActionFloat'
 
 export default defineComponent({
   name: 'ExpensePage',
-  components: { StyledContainer, StyledReportCard, StyledReportCardHeader, StyledReportCardContent },
+  components: { StyledContainer, StyledReportCard, StyledReportCardHeader, StyledReportCardContent, StyledExpenseActionFloat },
   setup() {
+    const router = useRouter()
     const store = useStore<Store>()
 
     function pickSign (type: ExpenseTypeEnum) {
@@ -102,8 +110,13 @@ export default defineComponent({
       })
     })
 
+    function handleAddExpenseClick () {
+      router.push('/expense')
+    }
+
     return {
       monthly,
+      handleAddExpenseClick,
     }
   },
 })

@@ -28,11 +28,17 @@ interface Expense {
   description: string
 }
 
+interface DisplayExpense extends Expense {
+  key: string
+  sign: string
+  color: string
+}
+
 interface MonthlyExpense {
   month: number
   year: number
   total: number
-  transactions: Expense[]
+  transactions: DisplayExpense[]
   sign: string
   color: string
 }

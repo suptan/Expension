@@ -5,17 +5,24 @@
     </Header>
     <StyledContainer>
       <ul>
-        <li>
-          <section>
-            <div>
-              <span>7/2021</span>
-              <span>2000</span>
-            </div>
-            <div v-for="item in transactions" :key="item.key">
-              <span>{{ item.category.name }}</span>
-              <span>{{ item.amount }}</span>
-            </div>
-          </section>
+        <li v-for="mth in monthly" :key="mth.month + mth.year">
+          <StyledReportCard>
+            <StyledReportCardHeader :color="mth.color">
+              <span>{{ mth.month }}/{{ mth.year }}</span>
+              <span>{{ mth.sign }} &#165;{{ mth.total }}</span>
+            </StyledReportCardHeader>
+            <StyledReportCardContent>
+              <List :width="'100%'">
+                <ListItem v-for="item in mth.transactions"
+                          :key="item.key"
+                          :color="item.color"
+                >
+                  <span>{{ item.category.name }}</span>
+                  <span>{{ item.sign }} &#165;{{ item.amount }}</span>
+                </ListItem>
+              </List>
+            </StyledReportCardContent>
+          </StyledReportCard>
         </li>
       </ul>
     </StyledContainer>
@@ -24,63 +31,80 @@
 
 <script lang="ts">
 import {
-  // computed,
+  computed,
   defineComponent,
   useStore,
 } from '@nuxtjs/composition-api'
 import { uuid } from 'vue-uuid'
 import { ExpenseTypeEnum } from '~/store/modules/expenses'
-import { Expense, Store } from '~/types'
+import { DisplayExpense, MonthlyExpense, Store } from '~/types'
+import { StyledContainer } from '~/styled-components/Container'
+import { StyledReportCard } from '~/styled-components/ReportCard'
+import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
+import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
 
 export default defineComponent({
   name: 'ExpensePage',
+  components: { StyledContainer, StyledReportCard, StyledReportCardHeader, StyledReportCardContent },
   setup() {
     const store = useStore<Store>()
-    
-    async function adddd() {
-      try {
-        await store.dispatch('categories/initialiseStore', 'tests')
-      } catch (error) {
-        console.log(error)
-      }
+
+    function pickSign (type: ExpenseTypeEnum) {
+      return type === ExpenseTypeEnum.CashOut ? '-' : '+'
     }
 
-    const transactions: Expense[] = [{
-      type: ExpenseTypeEnum.CashOut,
-      category: {
-        name: 'Ent',
-        isMain: false,
-        order: 1,
-      },
-      date: new Date(),
-      amount: 50,
-      description: '',
-    },{
-      type: ExpenseTypeEnum.CashOut,
-      category: {
-        name: 'Trans',
-        isMain: false,
-        order: 1,
-      },
-      date: new Date(),
-      amount: 505,
-      description: '',
-    },{
-      type: ExpenseTypeEnum.CashIn,
-      category: {
-        name: 'Work',
-        isMain: false,
-        order: 1,
-      },
-      date: new Date(),
-      amount: 504,
-      description: '',
-    }].map(t => ({ ...t, key: uuid.v4() }))
+    function pickColor (type: ExpenseTypeEnum) {
+      return type === ExpenseTypeEnum.CashOut ? '4B97F2' : '71AC40'
+    }
+
+    const monthly = computed(() => {
+      const normalize = store.state.expenses.data.reduce((acc, curr) => {
+        const date = new Date(curr.date)
+        const key = date.getMonth() + date.getFullYear()
+
+        if (!acc.has(key)) {
+          const newMonth: MonthlyExpense = {
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+            total: 0,
+            transactions: [] as DisplayExpense[],
+            sign: '+',
+            color: pickColor(ExpenseTypeEnum.CashIn),
+          }
+          acc.set(key, newMonth)
+        }
+
+        const target: MonthlyExpense = acc.get(key)
+
+        target.total += curr.amount * (curr.type === ExpenseTypeEnum.CashOut ? -1 : 1)
+        target.transactions.push({
+          ...curr,
+          key: uuid.v4(),
+          sign: pickSign(curr.type),
+          color: pickColor(curr.type),
+        })
+        target.sign = target.total > -1 ? '+' : '-'
+        target.color = pickColor(target.sign === '+' ? ExpenseTypeEnum.CashIn : ExpenseTypeEnum.CashOut)
+
+        return acc
+      }, new Map())
+      
+      const keys = [...normalize.keys()]
+
+      keys.sort()
+
+      return keys.map(key => {
+        const data: MonthlyExpense = normalize.get(key)
+        return {
+          ...data,
+          total: Math.abs(data.total)
+        }
+      })
+    })
 
     return {
-      adddd,
-      transactions,
+      monthly,
     }
-  }
+  },
 })
 </script>

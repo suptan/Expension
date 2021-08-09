@@ -34,7 +34,7 @@ import {
   PropType,
   useStore,
 } from '@nuxtjs/composition-api'
-import { CategoriesActionTypes } from '~/store/modules/categories/action-types'
+import { CategoriesAction } from '~/store/modules/categories/action-types'
 import { CategoriesUpdatePayload, Category, Store } from '~/types'
 
 type FormState = {
@@ -54,7 +54,7 @@ export default defineComponent({
 
     const updateCategory = (payload: CategoriesUpdatePayload) => {
       try {
-        store.dispatch(CategoriesActionTypes.UPDATE, payload)
+        store.dispatch(CategoriesAction.UPDATE, payload)
       } catch (error) {
         console.log(error)
       }

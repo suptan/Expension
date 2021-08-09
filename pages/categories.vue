@@ -54,7 +54,7 @@ import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
 import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
 import { StyledContainer } from '../styled-components/Container'
-import { CategoriesActionTypes } from '~/store/modules/categories/action-types'
+import { CategoriesAction } from '~/store/modules/categories/action-types'
 import { CategoriesSortPayload, Category, Store } from '~/types'
 
 type CategoriesPageData = {
@@ -76,21 +76,21 @@ export default defineComponent({
     const categories = computed(() => (store.state.categories.list))
     const addCategory = (payload: string) => {
       try {
-        store.dispatch(CategoriesActionTypes.ADD, payload)
+        store.dispatch(CategoriesAction.ADD, payload)
       } catch (error) {
         console.error(error)
       }
     }
     const removeCategory = (payload: string) => {
       try {
-        store.dispatch(CategoriesActionTypes.REMOVE, payload)
+        store.dispatch(CategoriesAction.REMOVE, payload)
       } catch (error) {
         console.error(error)
       }
     }
     const sortCategory = (payload: CategoriesSortPayload) => {
       try {
-        store.dispatch(CategoriesActionTypes.SORT, payload)
+        store.dispatch(CategoriesAction.SORT, payload)
       } catch (error) {
         console.error(error)
       }

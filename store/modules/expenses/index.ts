@@ -12,8 +12,6 @@ import {
   ExpenseState, RootState,
 } from '~/types'
 
-export const storageKey = 'expense'
-
 export enum ExpenseTypeEnum {
   CashIn = 'Cash In',
   CashOut = 'Cash Out',

@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { ExpensesMutationTypes } from './mutation-types'
-import { storageKey } from '.'
+import { storageKey } from './const'
 import { Expense, ExpenseState } from '~/types'
 
 export type Mutations<S = ExpenseState> = {

@@ -1,18 +1,18 @@
 <template>
-  <a-layout>
+  <section>
     <Header>
       <PageTitle>Expense Tracking</PageTitle>
-      <StyledExpenseActionFloat>
-        <a-button type="primary" @click="handleAddExpenseClick">
+      <StyledActionFloat>
+        <a-button type="primary" @click="handleClickAddExpense">
           Add
         </a-button>
-      </StyledExpenseActionFloat>
+      </StyledActionFloat>
     </Header>
     <StyledContent>
       <ul>
-        <li v-for="mth in monthly" :key="mth.month + mth.year">
+        <li v-for="mth in monthly" :key="mth.key">
           <StyledReportCard>
-            <StyledReportCardHeader :color="mth.color">
+            <StyledReportCardHeader>
               <span>{{ mth.month }}/{{ mth.year }}</span>
               <span>{{ mth.sign }} &#165;{{ mth.total }}</span>
             </StyledReportCardHeader>
@@ -22,7 +22,7 @@
                           :key="item.key"
                           :color="item.color"
                           :clickable="true"
-                          @click="handleTransactionClick(item.id)"
+                          @click="handleClickEditTransaction(item.id)"
                 >
                   <span>{{ item.category.name }}</span>
                   <span>{{ item.sign }} &#165;{{ item.amount }}</span>
@@ -33,7 +33,7 @@
         </li>
       </ul>
     </StyledContent>
-  </a-layout>
+  </section>
 </template>
 
 <script lang="ts">
@@ -49,12 +49,12 @@ import { StyledContent } from '~/styled-components/Content'
 import { StyledReportCard } from '~/styled-components/ReportCard'
 import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
 import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
-import { StyledExpenseActionFloat } from '~/styled-components/ExpenseActionFloat'
+import { StyledActionFloat } from '~/styled-components/ActionFloat'
 import { ExpenseTypeEnum } from '~/utils/const'
 
 export default defineComponent({
   name: 'ExpensePage',
-  components: { StyledContent, StyledReportCard, StyledReportCardHeader, StyledReportCardContent, StyledExpenseActionFloat },
+  components: { StyledContent, StyledReportCard, StyledReportCardHeader, StyledReportCardContent, StyledActionFloat },
   setup() {
     const router = useRouter()
     const store = useStore<Store>()
@@ -70,7 +70,7 @@ export default defineComponent({
     const monthly = computed(() => {
       const normalize = store.state.expenses.data.reduce((acc, curr) => {
         const date = new Date(curr.date)
-        const key = date.getMonth() + date.getFullYear()
+        const key = new Date(date.getFullYear(), date.getMonth()).getTime()
 
         if (!acc.has(key)) {
           const newMonth: MonthlyExpense = {
@@ -101,29 +101,30 @@ export default defineComponent({
       
       const keys = [...normalize.keys()]
 
-      keys.sort()
+      keys.sort((a, b) => a - b)
 
-      return keys.map(key => {
+      return keys.map((key: number) => {
         const data: MonthlyExpense = normalize.get(key)
         return {
           ...data,
+          key,
           total: Math.abs(data.total)
         }
       })
     })
 
-    function handleAddExpenseClick() {
+    function handleClickAddExpense() {
       router.push('/expense')
     }
 
-    function handleTransactionClick(expenseId: string) {
+    function handleClickEditTransaction(expenseId: string) {
       router.push(`/expense/${expenseId}`)
     }
 
     return {
       monthly,
-      handleAddExpenseClick,
-      handleTransactionClick,
+      handleClickAddExpense,
+      handleClickEditTransaction,
     }
   },
 })

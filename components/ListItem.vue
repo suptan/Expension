@@ -1,5 +1,6 @@
 <template>
   <StyledListItem :draggable="draggable"
+                  :clickable="clickable"
                   :color="color"
                   @dragstart="$emit('dragstart', $event)"
                   @dragenter="$emit('dragenter', $event)"
@@ -24,7 +25,8 @@ export default {
     color: {
       type: String,
       default: undefined,
-    }
+    },
+    clickable: Boolean,
   }
 }
 </script>

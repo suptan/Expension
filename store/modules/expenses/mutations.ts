@@ -5,7 +5,7 @@ import { StorageKeys } from '~/utils/const'
 
 export type Mutations<S = ExpenseState> = {
   [ExpensesMutationTypes.ADD](state: S, newValue: Expense): void
-  [ExpensesMutationTypes.REMOVE](state: S, value: Expense): void
+  [ExpensesMutationTypes.REMOVE](state: S, targetId: string): void
   [ExpensesMutationTypes.UPDATE](state: S, payload: Expense): void
 }
 
@@ -15,11 +15,21 @@ const mutations: MutationTree<ExpenseState> & Mutations = {
 
     localStorage.setItem(StorageKeys.Expenses, JSON.stringify(state.data))
   },
-  [ExpensesMutationTypes.REMOVE](state, value: Expense) {
-    console.log(state, value)
+  [ExpensesMutationTypes.REMOVE](state, targetId: string) {
+    state.data = state.data.filter(({ id }) => id !== targetId)
+
+    localStorage.setItem(StorageKeys.Expenses, JSON.stringify(state.data))
   },
   [ExpensesMutationTypes.UPDATE](state, payload: Expense) {
-    console.log(state, payload)
+    state.data = state.data.map(expense => {
+      if (expense.id === payload.id) {
+        return payload
+      }
+
+      return expense
+    })
+    
+    localStorage.setItem(StorageKeys.Expenses, JSON.stringify(state.data))
   },
 }
 

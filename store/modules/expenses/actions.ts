@@ -18,7 +18,7 @@ export interface Actions {
   ): void
   [ExpenseActionTypes.REMOVE](
     a: AugmentedActionContext,
-    payload: Expense
+    payload: string
   ): void
   [ExpenseActionTypes.UPDATE](
     a: AugmentedActionContext,

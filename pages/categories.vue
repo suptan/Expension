@@ -1,5 +1,5 @@
 <template>
-  <a-layout>
+  <section>
     <Header>
       <PageTitle>Category List</PageTitle>
     </Header>
@@ -46,7 +46,7 @@
         </p>
       </strong>
     </a-modal>
-  </a-layout>
+  </section>
 </template>
 
 <script lang="ts">

@@ -56,6 +56,7 @@ import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
 import { StyledContent } from '../styled-components/Content'
 import { CategoriesAction } from '~/store/modules/categories/action-types'
 import { CategoriesSortPayload, Category, Store } from '~/types'
+import { ExpenseAction } from '~/store/modules/expenses/action-types'
 
 type CategoriesPageData = {
   displayConfirmRemove?: boolean,
@@ -84,6 +85,7 @@ export default defineComponent({
     const removeCategory = (payload: string) => {
       try {
         store.dispatch(CategoriesAction.REMOVE, payload)
+        store.dispatch(ExpenseAction.REMOVE_ALL_BY_CATEGORY, payload)
       } catch (error) {
         console.error(error)
       }

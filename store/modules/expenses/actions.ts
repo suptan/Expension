@@ -20,6 +20,10 @@ export interface Actions {
     a: AugmentedActionContext,
     payload: string
   ): void
+  [ExpenseActionTypes.REMOVE_ALL_BY_CATEGORY](
+    a: AugmentedActionContext,
+    payload: string
+  ): void
   [ExpenseActionTypes.UPDATE](
     a: AugmentedActionContext,
     payload: Expense
@@ -32,6 +36,9 @@ const actions: ActionTree<ExpenseState, RootState> & Actions = {
   },
   [ExpenseActionTypes.REMOVE]({ commit }, payload) {
     commit(ExpensesMutationTypes.REMOVE, payload)
+  },
+  [ExpenseActionTypes.REMOVE_ALL_BY_CATEGORY]({ commit }, payload) {
+    commit(ExpensesMutationTypes.REMOVE_ALL_BY_CATEGORY, payload)
   },
   [ExpenseActionTypes.UPDATE]({ commit }, payload) {
     commit(ExpensesMutationTypes.UPDATE, payload)

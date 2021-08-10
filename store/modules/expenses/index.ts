@@ -12,11 +12,6 @@ import {
   ExpenseState, RootState,
 } from '~/types'
 
-export enum ExpenseTypeEnum {
-  CashIn = 'Cash In',
-  CashOut = 'Cash Out',
-}
-
 export type ExpensesStore<S = ExpenseState> = S & {
     commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
       key: K,

@@ -1,13 +1,15 @@
-import { ExpenseState } from '~/types'
-import { StorageKeys } from '~/utils/const'
+import { uuid } from 'vue-uuid'
+import { Expense, ExpenseState } from '~/types'
+import { ExpenseTypeEnum, StorageKeys } from '~/utils/const'
 
 export const state: ExpenseState = initialiseStore()
 
 function initialiseStore(): ExpenseState {
   // For demo
   if (!localStorage.getItem(StorageKeys.Expenses)) {
-    const mock = JSON.stringify([{
-      type: 'Cash Out',
+    const mock: Expense[] = [{
+      id: uuid.v4(),
+      type: ExpenseTypeEnum.CashOut,
       category: {
         name: 'Entertainment',
         isMain: false,
@@ -17,7 +19,8 @@ function initialiseStore(): ExpenseState {
       amount: 50,
       description: '',
     },{
-      type: 'Cash Out',
+      id: uuid.v4(),
+      type: ExpenseTypeEnum.CashOut,
       category: {
         name: 'Transportation',
         isMain: false,
@@ -27,7 +30,8 @@ function initialiseStore(): ExpenseState {
       amount: 505,
       description: '',
     },{
-      type: 'Cash In',
+      id: uuid.v4(),
+      type: ExpenseTypeEnum.CashIn,
       category: {
         name: 'Work',
         isMain: false,
@@ -37,7 +41,8 @@ function initialiseStore(): ExpenseState {
       amount: 504,
       description: '',
     },{
-      type: 'Cash Out',
+      id: uuid.v4(),
+      type: ExpenseTypeEnum.CashOut,
       category: {
         name: 'Transportation',
         isMain: false,
@@ -47,7 +52,8 @@ function initialiseStore(): ExpenseState {
       amount: 505,
       description: '',
     },{
-      type: 'Cash Out',
+      id: uuid.v4(),
+      type: ExpenseTypeEnum.CashOut,
       category: {
         name: 'Transportation',
         isMain: false,
@@ -56,8 +62,8 @@ function initialiseStore(): ExpenseState {
       date: new Date(2021, 5, 3),
       amount: 505,
       description: '',
-    }])
-    localStorage.setItem(StorageKeys.Expenses, mock)
+    }]
+    localStorage.setItem(StorageKeys.Expenses, JSON.stringify(mock))
   }
 
   return {

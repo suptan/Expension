@@ -1,6 +1,7 @@
 import { Form } from 'ant-design-vue'
 import { CategoriesStore } from '~/store/modules/categories'
-import { ExpensesStore, ExpenseTypeEnum } from '~/store/modules/expenses'
+import { ExpensesStore } from '~/store/modules/expenses'
+import { ExpenseTypeEnum } from '~/utils/const'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -21,6 +22,7 @@ interface Category {
 }
   
 interface Expense {
+  id: string
   type: ExpenseTypeEnum
   category: Category
   date: Date

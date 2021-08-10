@@ -56,7 +56,7 @@
 import { useRouter, useStore } from '@nuxtjs/composition-api'
 import { computed, defineComponent } from '@vue/composition-api'
 import moment from 'moment'
-import { DateFormat } from '~/helpers/data'
+import { DateFormat } from '~/helpers/date'
 import { ExpenseTypeEnum } from '~/store/modules/expenses'
 import { ExpenseAction } from '~/store/modules/expenses/action-types'
 import { StyledContent } from '~/styled-components/Content'

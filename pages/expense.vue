@@ -1,53 +1,55 @@
 <template>
-  <section>
+  <a-layout>
     <Header>
       <PageTitle>{{ title }}</PageTitle>
     </Header>
-    <StyledContainer>
-      <a-form :form="form" @submit.prevent="handleSubmit">
-        <a-form-item label="Type">
-          <StyledRadioGroup>
-            <a-radio-group v-decorator="['type', typeConfig]" button-style="solid">
-                <a-radio-button v-for="type in types" :key="type" :value="type">
-                {{ type }}
-                </a-radio-button>
-            </a-radio-group>
-          </StyledRadioGroup>
-        </a-form-item>
-        <a-form-item label="Category">
-          <a-select v-decorator="['category', categoryConfig]">
-            <a-select-option v-for="item in categories" :key="item.name" :value="item">
-              {{ item.name }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="Amount">
-          <StyledInputNumber>
-            <a-input-number v-decorator="['amount', amountConfig]"
-                            :min="0"
-                            :formatter="value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                            :parser="value => value.replace(/\￥\s?|(,*)/g, '')"
+    <StyledContent>
+      <StyledExpenseContent>
+        <a-form :form="form" @submit.prevent="handleSubmit">
+          <a-form-item label="Type">
+            <StyledRadioGroup>
+              <a-radio-group v-decorator="['type', typeConfig]" button-style="solid">
+                  <a-radio-button v-for="type in types" :key="type" :value="type">
+                  {{ type }}
+                  </a-radio-button>
+              </a-radio-group>
+            </StyledRadioGroup>
+          </a-form-item>
+          <a-form-item label="Category">
+            <a-select v-decorator="['category', categoryConfig]">
+              <a-select-option v-for="item in categories" :key="item.name" :value="item">
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="Amount">
+            <StyledInputNumber>
+              <a-input-number v-decorator="['amount', amountConfig]"
+                              :min="0"
+                              :formatter="value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                              :parser="value => value.replace(/\￥\s?|(,*)/g, '')"
+              />
+            </StyledInputNumber>
+          </a-form-item>
+          <a-form-item label="Date">
+            <a-date-picker v-decorator="['transactionDate', dateConfig]"
+                            style="width: 100%"
+                            :format="dateFormat"
             />
-          </StyledInputNumber>
-        </a-form-item>
-        <a-form-item label="Date">
-          <a-date-picker v-decorator="['transactionDate', dateConfig]"
-                         style="width: 100%"
-                         :format="dateFormat"
-          />
-        </a-form-item>
-        <a-form-item label="Description">
-          <a-textarea v-decorator="['description', descriptionConfig]" placeholder="Noted..."/>
-        </a-form-item>
-        <a-form-item>
-          <StyledExpandFooter>
-            <a-button @click="handleCancel">Cancel</a-button>
-            <a-button type="primary" html-type="submit">Add</a-button>
-          </StyledExpandFooter>
-        </a-form-item>
-      </a-form>
-    </StyledContainer>
-  </section>
+          </a-form-item>
+          <a-form-item label="Description">
+            <a-textarea v-decorator="['description', descriptionConfig]" placeholder="Noted..."/>
+          </a-form-item>
+          <a-form-item>
+            <StyledExpandFooter>
+              <a-button @click="handleCancel">Cancel</a-button>
+              <a-button type="primary" html-type="submit">Add</a-button>
+            </StyledExpandFooter>
+          </a-form-item>
+        </a-form>
+      </StyledExpenseContent>
+    </StyledContent>
+  </a-layout>
 </template>
 
 <script lang="ts">
@@ -57,10 +59,11 @@ import moment from 'moment'
 import { DateFormat } from '~/helpers/data'
 import { ExpenseTypeEnum } from '~/store/modules/expenses'
 import { ExpenseAction } from '~/store/modules/expenses/action-types'
-import { StyledContainer } from '~/styled-components/Container'
+import { StyledContent } from '~/styled-components/Content'
 import { StyledRadioGroup } from '~/styled-components/RadioGroup'
 import { StyledInputNumber } from '~/styled-components/InputNumber'
 import { StyledExpandFooter } from '~/styled-components/ExpenseFooter'
+import { StyledExpenseContent } from '~/styled-components/ExpenseContent'
 import { Category, Expense, Store } from '~/types'
 
 type FormState = {
@@ -73,7 +76,7 @@ type FormState = {
 
 export default defineComponent({
   name: 'ExpensePage',
-  components: { StyledContainer, StyledRadioGroup, StyledInputNumber, StyledExpandFooter },
+  components: { StyledContent, StyledRadioGroup, StyledInputNumber, StyledExpandFooter, StyledExpenseContent },
   layout: 'empty',
   setup() {
     const router = useRouter()

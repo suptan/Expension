@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <a-layout>
     <Header>
       <PageTitle>Expense Tracking</PageTitle>
       <StyledExpenseActionFloat>
@@ -8,7 +8,7 @@
         </a-button>
       </StyledExpenseActionFloat>
     </Header>
-    <StyledContainer>
+    <StyledContent>
       <ul>
         <li v-for="mth in monthly" :key="mth.month + mth.year">
           <StyledReportCard>
@@ -30,8 +30,8 @@
           </StyledReportCard>
         </li>
       </ul>
-    </StyledContainer>
-  </section>
+    </StyledContent>
+  </a-layout>
 </template>
 
 <script lang="ts">
@@ -44,7 +44,7 @@ import {
 import { uuid } from 'vue-uuid'
 import { ExpenseTypeEnum } from '~/store/modules/expenses'
 import { DisplayExpense, MonthlyExpense, Store } from '~/types'
-import { StyledContainer } from '~/styled-components/Container'
+import { StyledContent } from '~/styled-components/Content'
 import { StyledReportCard } from '~/styled-components/ReportCard'
 import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
 import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
@@ -52,7 +52,7 @@ import { StyledExpenseActionFloat } from '~/styled-components/ExpenseActionFloat
 
 export default defineComponent({
   name: 'ExpensePage',
-  components: { StyledContainer, StyledReportCard, StyledReportCardHeader, StyledReportCardContent, StyledExpenseActionFloat },
+  components: { StyledContent, StyledReportCard, StyledReportCardHeader, StyledReportCardContent, StyledExpenseActionFloat },
   setup() {
     const router = useRouter()
     const store = useStore<Store>()

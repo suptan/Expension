@@ -1,9 +1,9 @@
 <template>
-  <section>
+  <a-layout>
     <Header>
       <PageTitle>Category List</PageTitle>
     </Header>
-    <StyledContainer>
+    <StyledContent>
       <List @drop="handleDrop($event)">
         <CategoryItem v-for="item in categories"
                       :key="item.order"
@@ -29,7 +29,7 @@
           </a-row>
         </a-form>
       </StyledCategoriesFooter>
-    </StyledContainer>
+    </StyledContent>
     <a-modal v-model="displayConfirmRemove"
              ok-text="Confirm"
              :closable="false"
@@ -46,14 +46,14 @@
         </p>
       </strong>
     </a-modal>
-  </section>
+  </a-layout>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
 import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
-import { StyledContainer } from '../styled-components/Container'
+import { StyledContent } from '../styled-components/Content'
 import { CategoriesAction } from '~/store/modules/categories/action-types'
 import { CategoriesSortPayload, Category, Store } from '~/types'
 
@@ -70,7 +70,7 @@ type FormState = {
 }
 
 export default defineComponent({
-  components: { StyledCategoriesFooter, StyledContainer },
+  components: { StyledCategoriesFooter, StyledContent },
   setup() {
     const store = useStore<Store>()
     const categories = computed(() => (store.state.categories.list))

@@ -21,6 +21,8 @@
                 <ListItem v-for="item in mth.transactions"
                           :key="item.key"
                           :color="item.color"
+                          :clickable="true"
+                          @click="handleTransactionClick(item.id)"
                 >
                   <span>{{ item.category.name }}</span>
                   <span>{{ item.sign }} &#165;{{ item.amount }}</span>
@@ -42,13 +44,13 @@ import {
   useStore,
 } from '@nuxtjs/composition-api'
 import { uuid } from 'vue-uuid'
-import { ExpenseTypeEnum } from '~/store/modules/expenses'
 import { DisplayExpense, MonthlyExpense, Store } from '~/types'
 import { StyledContent } from '~/styled-components/Content'
 import { StyledReportCard } from '~/styled-components/ReportCard'
 import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
 import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
 import { StyledExpenseActionFloat } from '~/styled-components/ExpenseActionFloat'
+import { ExpenseTypeEnum } from '~/utils/const'
 
 export default defineComponent({
   name: 'ExpensePage',
@@ -110,13 +112,18 @@ export default defineComponent({
       })
     })
 
-    function handleAddExpenseClick () {
+    function handleAddExpenseClick() {
       router.push('/expense')
+    }
+
+    function handleTransactionClick(expenseId: string) {
+      router.push(`/expense/${expenseId}`)
     }
 
     return {
       monthly,
       handleAddExpenseClick,
+      handleTransactionClick,
     }
   },
 })

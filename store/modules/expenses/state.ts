@@ -1,13 +1,11 @@
-import { storageKey } from './const'
 import { ExpenseState } from '~/types'
+import { StorageKeys } from '~/utils/const'
 
 export const state: ExpenseState = initialiseStore()
 
 function initialiseStore(): ExpenseState {
-  console.log('storageKey',storageKey)
-  
   // For demo
-  if (!localStorage.getItem(storageKey)) {
+  if (!localStorage.getItem(StorageKeys.Expenses)) {
     const mock = JSON.stringify([{
       type: 'Cash Out',
       category: {
@@ -59,10 +57,10 @@ function initialiseStore(): ExpenseState {
       amount: 505,
       description: '',
     }])
-    localStorage.setItem(storageKey, mock)
+    localStorage.setItem(StorageKeys.Expenses, mock)
   }
 
   return {
-    data: JSON.parse(localStorage.getItem(storageKey) || '[]')
+    data: JSON.parse(localStorage.getItem(StorageKeys.Expenses) || '[]')
   }
 }

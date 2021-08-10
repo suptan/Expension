@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
 import { ExpensesMutationTypes } from './mutation-types'
-import { storageKey } from './const'
 import { Expense, ExpenseState } from '~/types'
+import { StorageKeys } from '~/utils/const'
 
 export type Mutations<S = ExpenseState> = {
   [ExpensesMutationTypes.ADD](state: S, newValue: Expense): void
@@ -13,7 +13,7 @@ const mutations: MutationTree<ExpenseState> & Mutations = {
   [ExpensesMutationTypes.ADD](state, newValue: Expense) {
     state.data = [...state.data, newValue]
 
-    localStorage.setItem(storageKey, JSON.stringify(state.data))
+    localStorage.setItem(StorageKeys.Expenses, JSON.stringify(state.data))
   },
   [ExpensesMutationTypes.REMOVE](state, value: Expense) {
     console.log(state, value)

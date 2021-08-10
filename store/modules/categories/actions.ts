@@ -1,4 +1,5 @@
-import { ActionTree, ActionContext } from 'vuex'
+import { ActionTree, ActionContext, CommitOptions } from 'vuex'
+import { ExpensesMutationTypes } from '../expenses/mutation-types'
 import { CategoriesActionTypes } from './action-types'
 import { CategoriesMutationTypes } from './mutation-types'
 import { Mutations } from './mutations'
@@ -8,6 +9,7 @@ type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
     key: K,
     payload: Parameters<Mutations[K]>[1],
+    options?: CommitOptions,
   ): ReturnType<Mutations[K]>;
 } & Omit<ActionContext<CategoryState, RootState>, 'commit'>
 
@@ -36,6 +38,9 @@ const actions: ActionTree<CategoryState, RootState> & Actions = {
   },
   [CategoriesActionTypes.REMOVE]({ commit }, payload) {
     commit(CategoriesMutationTypes.REMOVE, payload)
+    // TODO: find out how to generate type for this action
+    // @ts-ignore
+    commit(`expenses/${ExpensesMutationTypes.REMOVE_ALL_BY_CATEGORY}`, payload, { root: true })
   },
   [CategoriesActionTypes.UPDATE]({ commit }, payload) {
     commit(CategoriesMutationTypes.UPDATE, payload)

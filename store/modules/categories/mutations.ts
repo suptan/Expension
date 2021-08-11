@@ -3,6 +3,7 @@ import { CategoriesMutationTypes } from './mutation-types'
 import {
   CategoriesSortPayload,
   CategoriesUpdatePayload,
+  Category,
   CategoryState
 } from '~/types'
 import { StorageKeys } from '~/utils/const'
@@ -32,7 +33,16 @@ const mutations: MutationTree<CategoryState> & Mutations = {
     localStorage.setItem(StorageKeys.Categories, JSON.stringify(newList))
   },
   [CategoriesMutationTypes.REMOVE](state, value: string) {
-    const list = state.list.filter(s => s.name !== value)
+    const list = state.list.reduce((acc: Category[], cur: Category) => {
+      if (cur.name !== value) {
+        acc.push({
+          ...cur,
+          order: acc.length + 1,
+        })
+      }
+
+      return acc
+    }, [])
 
     if (list.length === state.list.length) {
       console.debug('Item not found')

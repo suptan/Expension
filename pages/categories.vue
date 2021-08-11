@@ -14,7 +14,7 @@
         />
       </List>
       <StyledCategoriesFooter>
-        <a-form layout="horizontal" :form="form" @submit="handleSubmit">
+        <a-form layout="horizontal" :form="form" @submit.prevent="handleSubmit">
           <a-form-item>
             <a-input
               v-decorator="['name', { rules: [{ required: true, message: 'Please input the name!' }] }]"
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
 import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
 import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
 import { StyledContent } from '../styled-components/Content'
@@ -62,7 +62,6 @@ type CategoriesPageData = {
   dragItem?: Category,
   dropItem?: Category,
   form: WrappedFormUtils,
-  selectedItem: string,
 }
 
 type FormState = {
@@ -95,26 +94,64 @@ export default defineComponent({
         console.error(error)
       }
     }
+    const displayConfirmRemove = ref(false)
+    const dragItem = ref()
+    const dropItem = ref()
+    const selectedItem = ref('')
+
+    function handleDragEnter(item: Category) {
+      dropItem.value = item
+    }
+    function handleDrop(evt: DragEvent) {
+      evt.preventDefault()
+      if (!evt.dataTransfer || !dragItem.value || !dropItem.value) {
+        return
+      }
+
+      sortCategory({ firstItem: dragItem.value, secondItem: dropItem.value })
+    }
+    function handleRemove(name: string) {
+      selectedItem.value = name
+      displayConfirmRemove.value = true
+    }
+    function handleRemoveConfirm() {
+      removeCategory(selectedItem.value)
+      displayConfirmRemove.value = false
+    }
+    function startDrag(evt: DragEvent, item: Category) {
+      if (!evt.dataTransfer) {
+        return
+      }
+
+      evt.dataTransfer.dropEffect = 'move'
+      evt.dataTransfer.effectAllowed = 'move'
+
+      dragItem.value = item
+    }
 
     return {
-      addCategory,
       categories,
+      displayConfirmRemove,
+      dragItem,
+      dropItem,
+      selectedItem,
+      addCategory,
       removeCategory,
       sortCategory,
+      handleDragEnter,
+      handleDrop,
+      handleRemove,
+      handleRemoveConfirm,
+      startDrag,
     }
   },
   data(): CategoriesPageData {
     return {
-      displayConfirmRemove: false,
-      dragItem: undefined,
-      dropItem: undefined,
       form: this.$form.createForm(this, { name: 'coordinated' }),
-      selectedItem: '',
     }
   },
   methods: {
-    handleSubmit(evt: Event) {
-      evt.preventDefault()
+    handleSubmit() {
       this.form.validateFields((error: Error[], values: FormState) => {
         if (error) {
           return
@@ -124,35 +161,6 @@ export default defineComponent({
         this.addCategory(name)
         this.form.resetFields(['name'])
       })
-    },
-    handleRemove(name: string) {
-      this.selectedItem = name
-      this.displayConfirmRemove = true
-    },
-    handleRemoveConfirm() {
-      this.removeCategory(this.selectedItem)
-      this.displayConfirmRemove = false
-    },
-    startDrag(evt: DragEvent, item: Category) {
-      if (!evt.dataTransfer) {
-        return
-      }
-
-      evt.dataTransfer.dropEffect = 'move'
-      evt.dataTransfer.effectAllowed = 'move'
-
-      this.dragItem = item
-    },
-    handleDragEnter(item: Category) {
-      this.dropItem = item
-    },
-    handleDrop(evt: DragEvent) {
-      evt.preventDefault()
-      if (!evt.dataTransfer || !this.dragItem || !this.dropItem) {
-        return
-      }
-
-      this.sortCategory({ firstItem: this.dragItem, secondItem: this.dropItem })
     },
   }
 })

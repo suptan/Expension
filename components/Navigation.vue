@@ -13,29 +13,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, ref } from '@vue/composition-api'
 
 export default defineComponent({
-  data() {
-    const { path } = this.$router.currentRoute
-    const menus = [{
-      name: 'Expense',
-      path: '/',
-    },{
-      name: 'Category',
-      path: '/categories',
-    }]
+  setup() {
+    const router = useRouter()
+    const menus = reactive(
+      [{
+        name: 'Expense',
+        path: '/',
+      },{
+        name: 'Category',
+        path: '/categories',
+      }]
+    )
+    const path = ref(router.currentRoute.path)
+    
+    function handleClick(nextPath: string) {
+      router.push(nextPath)
+      path.value = nextPath
+    }
     
     return {
       menus,
       path,
+      handleClick,
     }
   },
-  methods: {
-    handleClick(path: string) {
-      this.$router.push(path)
-      this.path = path
-    }
-  }
 })
 </script>

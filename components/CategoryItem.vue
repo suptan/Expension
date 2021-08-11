@@ -20,6 +20,7 @@
   </ListItem>
   <ListItem v-else
             :draggable="true"
+            :clickable="true"
             @dragstart="$emit('dragstart', $event)"
             @dragenter="$emit('dragenter', $event)"
   >
@@ -32,6 +33,7 @@
 import {
   defineComponent,
   PropType,
+  ref,
   useStore,
 } from '@nuxtjs/composition-api'
 import { CategoriesAction } from '~/store/modules/categories/action-types'
@@ -49,9 +51,10 @@ export default defineComponent({
       default: () => ({}),
     }
   },
-  setup() {
+  setup(props) {
     const store = useStore<Store>()
-
+    const isEdit = ref(false)
+    const { item } = props
     const updateCategory = (payload: CategoriesUpdatePayload) => {
       try {
         store.dispatch(CategoriesAction.UPDATE, payload)
@@ -59,9 +62,22 @@ export default defineComponent({
         console.log(error)
       }
     }
+    const handleEdit = () => {
+      if (item.isMain) {
+        return
+      }
+
+      isEdit.value = true
+    }
+    const handleDiscard = () => {
+      isEdit.value = false
+    }
 
     return {
+      isEdit,
       updateCategory,
+      handleEdit,
+      handleDiscard,
     }
   },
   data() {
@@ -69,20 +85,9 @@ export default defineComponent({
       form: this.$form.createForm(this, {
         name: 'editCategory',
       }),
-      isEdit: false,
     }
   },
   methods: {
-    handleEdit() {
-      if (this.item.isMain) {
-        return
-      }
-
-      this.isEdit = true
-    },
-    handleDiscard() {
-      this.isEdit = false
-    },
     handleSubmit(e: Event) {
       e.preventDefault()
       this.form.validateFields((error: Error[], values: FormState) => {

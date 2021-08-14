@@ -1,22 +1,9 @@
 <template>
   <ListItem v-if="isEdit">
-      <a-form layout="inline" :form="form" @submit="handleSubmit">
-        <a-form-item>
-          <a-input
-            v-decorator="['name', { initialValue: item.name, rules: [{ required: true, message: 'Please input the name!' }] }]"
-          />
-        </a-form-item>
-        <a-form-item>
-          <a-button type="danger" @click="handleDiscard($event)">
-            Cancel
-          </a-button>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" html-type="submit">
-            Save
-          </a-button>
-        </a-form-item>
-      </a-form>
+    <CategoryUpdatedForm :item="item"
+                         @postupdated="handlePostUpdated"
+                         @cancel.stop="handlePostUpdated"
+    />
   </ListItem>
   <ListItem v-else
             :draggable="true"
@@ -26,7 +13,7 @@
             @dragenter="$emit('dragenter', $event)"
   >
     <span>{{ item.name }}</span>
-    <CrossOutlined v-if="!item.isMain" @click="$emit('remove', item)" />
+    <CrossOutlined v-if="!item.isMain" @click="$emit('remove', $event)" />
   </ListItem>
 </template>
 
@@ -37,15 +24,13 @@ import {
   ref,
   useStore,
 } from '@nuxtjs/composition-api'
+import CategoryUpdatedForm from './CategoryUpdatedForm.vue'
 import { CategoriesAction } from '~/store/modules/categories/action-types'
 import { CategoriesUpdatePayload, Category, Store } from '~/types'
 
-type FormState = {
-  name: string
-}
-
 export default defineComponent({
   name: 'CategoryItem',
+  components: { CategoryUpdatedForm },
   props: {
     item: {
       type: Object as PropType<Category>,
@@ -70,9 +55,7 @@ export default defineComponent({
 
       isEdit.value = true
     }
-    const handleDiscard = (evt: Event) => {
-      evt.stopPropagation()
-      
+    const handlePostUpdated = () => {
       isEdit.value = false
     }
 
@@ -80,29 +63,8 @@ export default defineComponent({
       isEdit,
       updateCategory,
       handleEdit,
-      handleDiscard,
+      handlePostUpdated,
     }
   },
-  data() {
-    return {
-      form: this.$form.createForm(this, {
-        name: 'editCategory',
-      }),
-    }
-  },
-  methods: {
-    handleSubmit(e: Event) {
-      e.preventDefault()
-      this.form.validateFields((error: Error[], values: FormState) => {
-        if (error) {
-          return
-        }
-        const { name } = values
-
-        this.updateCategory({ oldValue: this.$props.item.name, newValue: name })
-        this.isEdit = false
-      })
-    },
-  }
 })
 </script>

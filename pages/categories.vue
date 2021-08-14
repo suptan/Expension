@@ -10,14 +10,14 @@
                       :item="item"
                       @dragstart="startDrag($event, item)"
                       @dragenter.prevent="handleDragEnter(item)"
-                      @remove="handleRemove(item.name)"
+                      @remove.stop="handleRemove(item.name)"
         />
       </List>
       <StyledCategoriesFooter>
         <a-form layout="horizontal" :form="form" @submit.prevent="handleSubmit">
           <a-form-item>
             <a-input
-              v-decorator="['name', { rules: [{ required: true, message: 'Please input the name!' }] }]"
+              v-decorator="['name', nameConfig]"
             />
           </a-form-item>
           <a-row>
@@ -128,6 +128,12 @@ export default defineComponent({
 
       dragItem.value = item
     }
+    const nameConfig =  {
+      rules: [
+        { transform: (value: string) => value.trim() },
+        { required: true, message: 'Please input the name!' },
+      ],
+    }
 
     return {
       categories,
@@ -135,6 +141,7 @@ export default defineComponent({
       dragItem,
       dropItem,
       selectedItem,
+      nameConfig,
       addCategory,
       removeCategory,
       sortCategory,
@@ -158,7 +165,7 @@ export default defineComponent({
         }
         const { name } = values
 
-        this.addCategory(name)
+        this.addCategory(name.trim())
         this.form.resetFields(['name'])
       })
     },

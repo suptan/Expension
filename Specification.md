@@ -29,7 +29,7 @@ Its best to used our recommended stack as its our product tech stack.
 
 ### 4. Communication skills and Explanation of your work
 
-- [ ] Write a concise and informative description on how u approach this assignment in [Description.md](/Description.md)
+- [*] Write a concise and informative description on how u approach this assignment in [Description.md](/Description.md)
 
 ## User story & Design
 

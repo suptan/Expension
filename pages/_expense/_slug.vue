@@ -47,7 +47,9 @@
           </a-form-item>
           <a-form-item>
             <StyledExpandFooter>
-              <a-button @click="handleCancel">Cancel</a-button>
+              <nuxt-link to="/">
+                <a-button block>Cancel</a-button>
+              </nuxt-link>
               <a-button type="primary" html-type="submit">{{ labels.submit }}</a-button>
             </StyledExpandFooter>
           </a-form-item>
@@ -100,7 +102,7 @@ export default defineComponent({
     const types = ExpenseTypeEnum
     const categories = computed(() => store.state.categories.list)
     const slug = computed(() => params.value.slug)
-    const expense = useStatic((slug) => Promise.resolve(computed(() => store.state.expenses.data.find(({ id }) => id === slug)).value), slug, 'eesfse')
+    const expense = useStatic((slug) => Promise.resolve(computed(() => store.state.expenses.data.find(({ id }) => id === slug)).value), slug, 'expense')
     const isEdit = computed(() => expense.value?.id != null)
     const labels = computed(() => {
       const { id } = expense.value || {}
@@ -150,11 +152,11 @@ export default defineComponent({
       ],
     }))
     const amountConfig = computed(() => ({
-      initialValue: expense.value?.amount || 0,
+      initialValue: expense.value?.amount,
       rules: [
         {
           required: true,
-          message: 'Should greater than 0!',
+          message: 'Should greater than or equal 0!',
         }
       ],
     }))
@@ -166,6 +168,9 @@ export default defineComponent({
           message: 'Please pick a date!',
         },
       ],
+    }))
+    const descriptionConfig = computed(() => ({
+      initialValue: expense.value?.description,
     }))
     const displayConfirmRemove = ref(false)
 
@@ -181,7 +186,7 @@ export default defineComponent({
       categoryConfig,
       amountConfig,
       dateConfig,
-      descriptionConfig: {},
+      descriptionConfig,
       addExpense,
       removeExpense,
       editExpense,

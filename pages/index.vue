@@ -3,9 +3,11 @@
     <Header>
       <PageTitle>Expense Tracking</PageTitle>
       <StyledActionFloat>
-        <a-button type="primary" @click="handleClickAddExpense">
-          Add
-        </a-button>
+        <nuxt-link to="/expense">
+          <a-button type="primary">
+            Add
+          </a-button>
+        </nuxt-link>
       </StyledActionFloat>
     </Header>
     <StyledContent>
@@ -113,17 +115,12 @@ export default defineComponent({
       })
     })
 
-    function handleClickAddExpense() {
-      router.push('/expense')
-    }
-
     function handleClickEditTransaction(expenseId: string) {
       router.push(`/expense/${expenseId}`)
     }
 
     return {
       monthly,
-      handleClickAddExpense,
       handleClickEditTransaction,
     }
   },

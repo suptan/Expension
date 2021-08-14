@@ -130,7 +130,7 @@ export default defineComponent({
     }
     const nameConfig =  {
       rules: [
-        { transform: (value: string) => value.trim() },
+        { transform: (value: string | undefined) => value?.trim() },
         { required: true, message: 'Please input the name!' },
       ],
     }

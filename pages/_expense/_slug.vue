@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { useContext, useRouter, useStatic, useStore } from '@nuxtjs/composition-api'
+import { useContext, useRouter, useStore } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref } from '@vue/composition-api'
 import moment from 'moment'
 import { uuid } from 'vue-uuid'
@@ -102,7 +102,7 @@ export default defineComponent({
     const types = ExpenseTypeEnum
     const categories = computed(() => store.state.categories.list)
     const slug = computed(() => params.value.slug)
-    const expense = useStatic((slug) => Promise.resolve(computed(() => store.state.expenses.data.find(({ id }) => id === slug)).value), slug, 'expense')
+    const expense = computed(() => store.state.expenses.data.find(({ id }) => id === slug.value))
     const isEdit = computed(() => expense.value?.id != null)
     const labels = computed(() => {
       const { id } = expense.value || {}

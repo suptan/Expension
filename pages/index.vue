@@ -11,7 +11,8 @@
       </StyledActionFloat>
     </Header>
     <StyledContent>
-      <ul>
+      <span v-if="monthly.length === 0">No Record</span>
+      <ul v-else>
         <li v-for="mth in monthly" :key="mth.key">
           <StyledReportCard>
             <StyledReportCardHeader>

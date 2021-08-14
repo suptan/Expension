@@ -7,7 +7,7 @@
           />
         </a-form-item>
         <a-form-item>
-          <a-button type="danger" @click="handleDiscard">
+          <a-button type="danger" @click="handleDiscard($event)">
             Cancel
           </a-button>
         </a-form-item>
@@ -21,10 +21,11 @@
   <ListItem v-else
             :draggable="true"
             :clickable="true"
+            @click="handleEdit"
             @dragstart="$emit('dragstart', $event)"
             @dragenter="$emit('dragenter', $event)"
   >
-    <span @click="handleEdit">{{ item.name }}</span>
+    <span>{{ item.name }}</span>
     <CrossOutlined v-if="!item.isMain" @click="$emit('remove', item)" />
   </ListItem>
 </template>
@@ -69,7 +70,9 @@ export default defineComponent({
 
       isEdit.value = true
     }
-    const handleDiscard = () => {
+    const handleDiscard = (evt: Event) => {
+      evt.stopPropagation()
+      
       isEdit.value = false
     }
 

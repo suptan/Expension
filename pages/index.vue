@@ -14,18 +14,18 @@
           <StyledReportCard>
             <StyledReportCardHeader>
               <span>{{ mth.month }}/{{ mth.year }}</span>
-              <span>{{ mth.sign }} &#165;{{ mth.total }}</span>
+              <span>{{ mth.total }}</span>
             </StyledReportCardHeader>
             <StyledReportCardContent>
               <List :width="'100%'">
                 <ListItem v-for="item in mth.transactions"
-                          :key="item.key"
+                          :key="item.id"
                           :color="item.color"
                           :clickable="true"
                           @click="handleClickEditTransaction(item.id)"
                 >
                   <span>{{ item.category.name }}</span>
-                  <span>{{ item.sign }} &#165;{{ item.amount }}</span>
+                  <span>{{ item.formatCurrency }}</span>
                 </ListItem>
               </List>
             </StyledReportCardContent>
@@ -43,7 +43,6 @@ import {
   useRouter,
   useStore,
 } from '@nuxtjs/composition-api'
-import { uuid } from 'vue-uuid'
 import { DisplayExpense, MonthlyExpense, Store } from '~/types'
 import { StyledContent } from '~/styled-components/Content'
 import { StyledReportCard } from '~/styled-components/ReportCard'
@@ -51,6 +50,7 @@ import { StyledReportCardHeader } from '~/styled-components/ReportCardHeader'
 import { StyledReportCardContent } from '~/styled-components/ReportCardContent'
 import { StyledActionFloat } from '~/styled-components/ActionFloat'
 import { ExpenseTypeEnum } from '~/utils/const'
+import { numberWithCommas } from '~/helpers/currency'
 
 export default defineComponent({
   name: 'ExpensePage',
@@ -85,13 +85,11 @@ export default defineComponent({
         }
 
         const target: MonthlyExpense = acc.get(key)
-
         target.total += curr.amount * (curr.type === ExpenseTypeEnum.CashOut ? -1 : 1)
         target.transactions.push({
           ...curr,
-          key: uuid.v4(),
-          sign: pickSign(curr.type),
           color: pickColor(curr.type),
+          formatCurrency: `${pickSign(curr.type)}￥${numberWithCommas(curr.amount)}`
         })
         target.sign = target.total > -1 ? '+' : '-'
         target.color = pickColor(target.sign === '+' ? ExpenseTypeEnum.CashIn : ExpenseTypeEnum.CashOut)
@@ -105,10 +103,12 @@ export default defineComponent({
 
       return keys.map((key: number) => {
         const data: MonthlyExpense = normalize.get(key)
+        const total = `${data.sign}￥${numberWithCommas(Math.abs(data.total))}`
+
         return {
           ...data,
           key,
-          total: Math.abs(data.total)
+          total,
         }
       })
     })

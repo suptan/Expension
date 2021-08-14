@@ -31,9 +31,8 @@ interface Expense {
 }
 
 interface DisplayExpense extends Expense {
-  key: string
-  sign: string
   color: string
+  formatCurrency: string
 }
 
 interface MonthlyExpense {

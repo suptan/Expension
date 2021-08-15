@@ -1,16 +1,13 @@
 <template>
-  <ListItem v-if="isEdit">
+  <ListItem v-if="isEdit" @click.stop>
     <CategoryUpdatedForm :item="item"
                          @postupdated="handlePostUpdated"
                          @cancel.stop="handlePostUpdated"
     />
   </ListItem>
   <ListItem v-else
-            :draggable="true"
             :clickable="true"
-            @click="handleEdit"
-            @dragstart="$emit('dragstart', $event)"
-            @dragenter="$emit('dragenter', $event)"
+            @click.stop="handleEdit"
   >
     <span>{{ item.name }}</span>
     <CrossOutlined v-if="!item.isMain" @click="$emit('remove', $event)" />

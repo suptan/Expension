@@ -49,11 +49,6 @@ type CategoriesUpdatePayload = {
   newValue: string 
 }
 
-type CategoriesSortPayload = {
-  firstItem: Category
-  secondItem: Category
-}
-
 interface MainState {
   version: string
   $localForage: any

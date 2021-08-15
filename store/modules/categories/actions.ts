@@ -3,7 +3,7 @@ import { ExpensesMutationTypes } from '../expenses/mutation-types'
 import { CategoriesActionTypes } from './action-types'
 import { CategoriesMutationTypes } from './mutation-types'
 import { Mutations } from './mutations'
-import { CategoriesSortPayload, CategoriesUpdatePayload, CategoryState, RootState } from '~/types'
+import { CategoriesUpdatePayload, Category, CategoryState, RootState } from '~/types'
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -28,7 +28,7 @@ export interface Actions {
   ): void
   [CategoriesActionTypes.SORT](
     a: AugmentedActionContext,
-    payload: CategoriesSortPayload
+    payload: Category[]
   ): void
 }
 

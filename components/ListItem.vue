@@ -4,7 +4,7 @@
                   :color="color"
                   @dragstart="$emit('dragstart', $event)"
                   @dragenter="$emit('dragenter', $event)"
-                  @click="$emit('click')"
+                  @click="$emit('click', $event)"
   >
     <slot />
   </StyledListItem>

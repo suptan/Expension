@@ -1,7 +1,6 @@
 import { MutationTree } from 'vuex'
 import { CategoriesMutationTypes } from './mutation-types'
 import {
-  CategoriesSortPayload,
   CategoriesUpdatePayload,
   Category,
   CategoryState
@@ -12,7 +11,7 @@ export type Mutations<S = CategoryState> = {
   [CategoriesMutationTypes.ADD](state: S, newValue: string): void
   [CategoriesMutationTypes.REMOVE](state: S, value: string): void
   [CategoriesMutationTypes.UPDATE](state: S, payload: CategoriesUpdatePayload): void
-  [CategoriesMutationTypes.SORT](state: S, payload: CategoriesSortPayload): void
+  [CategoriesMutationTypes.SORT](state: S, payload: Category[]): void
 }
 
 const mutations: MutationTree<CategoryState> & Mutations = {
@@ -64,15 +63,11 @@ const mutations: MutationTree<CategoryState> & Mutations = {
 
     localStorage.setItem(StorageKeys.Categories, JSON.stringify(state.list))
   },
-  [CategoriesMutationTypes.SORT](state, { firstItem, secondItem }: CategoriesSortPayload) {
-    const list = [...state.list]
-    const { order: aIdx } = firstItem
-    const { order: bIdx } = secondItem
-    
-    ;[list[aIdx - 1], list[bIdx - 1]] = [list[bIdx - 1], list[aIdx - 1]]
-    ;[list[aIdx - 1].order, list[bIdx - 1].order] = [aIdx, bIdx]
-
-    state.list = list
+  [CategoriesMutationTypes.SORT](state, payload) {
+    state.list = payload.map((item, i) => ({
+      ...item,
+      order: i + 1,
+    }))
     
     localStorage.setItem(StorageKeys.Categories, JSON.stringify(state.list))
   },

@@ -4,15 +4,13 @@
       <PageTitle>Category List</PageTitle>
     </Header>
     <StyledContent>
-      <List @drop="handleDrop($event)">
+      <draggable v-model="categories" group="people" tag="ul" @start="dragging = true" @end="dragging = false" @input="handleDrop">
         <CategoryItem v-for="item in categories"
                       :key="item.order"
                       :item="item"
-                      @dragstart="startDrag($event, item)"
-                      @dragenter.prevent="handleDragEnter(item)"
                       @remove.stop="handleRemove(item.name)"
         />
-      </List>
+      </draggable>
       <StyledCategoriesFooter>
         <a-form layout="horizontal" :form="form" @submit.prevent="handleSubmit">
           <a-form-item>
@@ -51,28 +49,21 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useStore } from '@nuxtjs/composition-api'
-import { WrappedFormUtils } from 'ant-design-vue/types/form/form'
+import draggable from 'vuedraggable'
 import { StyledCategoriesFooter } from '../styled-components/CategoriesFooter'
 import { StyledContent } from '../styled-components/Content'
 import { CategoriesAction } from '~/store/modules/categories/action-types'
-import { CategoriesSortPayload, Category, Store } from '~/types'
-
-type CategoriesPageData = {
-  displayConfirmRemove?: boolean,
-  dragItem?: Category,
-  dropItem?: Category,
-  form: WrappedFormUtils,
-}
+import { Category, Store } from '~/types'
 
 type FormState = {
   name: string
 }
 
 export default defineComponent({
-  components: { StyledCategoriesFooter, StyledContent },
+  components: { StyledCategoriesFooter, StyledContent, draggable },
   setup() {
     const store = useStore<Store>()
-    const categories = computed(() => (store.state.categories.list))
+    const categories = computed(() => store.state.categories.list)
     const addCategory = (payload: string) => {
       try {
         store.dispatch(CategoriesAction.ADD, payload)
@@ -87,7 +78,7 @@ export default defineComponent({
         console.error(error)
       }
     }
-    const sortCategory = (payload: CategoriesSortPayload) => {
+    const sortCategory = (payload: Category[]) => {
       try {
         store.dispatch(CategoriesAction.SORT, payload)
       } catch (error) {
@@ -95,20 +86,11 @@ export default defineComponent({
       }
     }
     const displayConfirmRemove = ref(false)
-    const dragItem = ref()
-    const dropItem = ref()
     const selectedItem = ref('')
+    const dragging = ref(false)
 
-    function handleDragEnter(item: Category) {
-      dropItem.value = item
-    }
-    function handleDrop(evt: DragEvent) {
-      evt.preventDefault()
-      if (!evt.dataTransfer || !dragItem.value || !dropItem.value) {
-        return
-      }
-
-      sortCategory({ firstItem: dragItem.value, secondItem: dropItem.value })
+    function handleDrop(newList: Category[]) {
+      sortCategory(newList)
     }
     function handleRemove(name: string) {
       selectedItem.value = name
@@ -117,16 +99,6 @@ export default defineComponent({
     function handleRemoveConfirm() {
       removeCategory(selectedItem.value)
       displayConfirmRemove.value = false
-    }
-    function startDrag(evt: DragEvent, item: Category) {
-      if (!evt.dataTransfer) {
-        return
-      }
-
-      evt.dataTransfer.dropEffect = 'move'
-      evt.dataTransfer.effectAllowed = 'move'
-
-      dragItem.value = item
     }
     const nameConfig =  {
       rules: [
@@ -138,21 +110,18 @@ export default defineComponent({
     return {
       categories,
       displayConfirmRemove,
-      dragItem,
-      dropItem,
       selectedItem,
+      dragging,
       nameConfig,
       addCategory,
       removeCategory,
       sortCategory,
-      handleDragEnter,
       handleDrop,
       handleRemove,
       handleRemoveConfirm,
-      startDrag,
     }
   },
-  data(): CategoriesPageData {
+  data() {
     return {
       form: this.$form.createForm(this, { name: 'coordinated' }),
     }

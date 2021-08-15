@@ -120,6 +120,7 @@ For this step I plan to re-test all the features again before deliver with the f
 - Testing
 - Page meta
 - Monthly report caching
-- Upgrade CSS framework (antd) when Nuxt fully support Vue 3
+- Upgrade CSS framework (antd) when Nuxt fully support Vue3
 - Reduce size of Ant Design from bundle
 - Randomly error message from layout components
+- Fix drag component warning when Nuxt fully support Vue3

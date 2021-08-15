@@ -117,7 +117,7 @@ For this step I plan to re-test all the features again before deliver with the f
 - Assign type to store action from cross modules
 - Enum of Action types with sub module
 - Logger
-- Testing
+- Unit Test
 - Page meta
 - Monthly report caching
 - Upgrade CSS framework (antd) when Nuxt fully support Vue3
